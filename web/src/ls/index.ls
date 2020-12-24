@@ -28,6 +28,7 @@ view = new ldView do
 s = new ldscroll do
   root: document
   nodes: view.getAll('marker')
+  track-outside-view: true
 s.on \change, (list) -> 
   list.map ->
     id = it.node.getAttribute(\data-id)

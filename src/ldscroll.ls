@@ -2,50 +2,72 @@ main = (opt={}) ->
   @opt = opt
   root = opt.root
   @root = root = if typeof(root) == \string => document.querySelector(root) else if root => root else null
-  @io = new IntersectionObserver ((...args) ~> @handler.apply @, args), {root: @root}
-  @nodes = []
-  @data = []
-  @visible = []
-  @add opt.nodes
   @evt-handler = {}
-  window.addEventListener \scroll, ~>
-    @data.map (it,i) ~>
+  @io = new IntersectionObserver ((...args) ~> @handler.apply @, args), {root: @root}
+  @tov = if opt.track-outside-view? => opt.track-outside-view else true
+
+  # store node -> data mapping
+  @map = if WeakMap? => new WeakMap! else new Map!
+
+  # all nodes
+  @nodes = []
+
+  # all data
+  @data = []
+
+  # data for visible nodes
+  @visible = []
+
+  # data for nodes we should track
+  @trackee = []
+
+  @add opt.nodes
+  @root.addEventListener \scroll, ~>
+    list = if @tov => @data else @trackee
+    list.map (it,i) ~>
       b = it.node.getBoundingClientRect!
       it.yb = (b.y + b.height) / window.innerHeight
       it.yt = b.y / window.innerHeight
-    @fire \change, @data
+    @fire \change, list
   @
 
 main.prototype = Object.create(Object.prototype) <<< do
   on: (n, cb) -> @evt-handler.[][n].push cb
   fire: (n, ...v) -> for cb in (@evt-handler[n] or []) => cb.apply @, v
-  add: (ns) ->
+  get-visible: -> @visible
+  add: (ns, tov = @tov) ->
     @nodes ++= (if Array.isArray(ns) => ns else [ns])
       .map -> if typeof(it) == \string => Array.from(document.querySelectorAll(it)) else it
       .reduce(((a,b) -> a ++ b), [])
-    @nodes.forEach (it,i) ~>
+    h = window.innerHeight
+    ret = @nodes.map (it,i) ~>
       b = it.getBoundingClientRect!
-      it._ldscroll = do
+      @map.set(it, d = {
         node: it
-        yt: b.y / window.innerHeight
-        yb: (b.y + b.height) / window.innerHeight
+        tov: tov
+        yt: b.y / h
+        yb: (b.y + b.height) / h
+      })
       @io.observe it
-    @data ++= @nodes.map -> it._ldscroll
+      d
+    @data ++= ret
+    @trackee ++= ret.filter -> it.tov
   handler: (entries) ->
     ret = entries
-      .filter (entry) ~>
-        d = entry.target._ldscroll
-        if d.visible != entry.isIntersecting =>
-          d.visible = entry.isIntersecting
-          if d.visible and !(d in @visible) => @visible.push d
-          if !d.visible and d in @visible => @visible.splice(@visible.indexOf(d), 1)
-          return true
-        return false
-    ret = ret.map ->
-      d = it.target._ldscroll
-      d.entry = it
-      d
+      .map (entry) ~>
+        if (d = @map.get entry.target) => d.entry = entry
+        return d
+      .filter (d) ~>
+        if !d or (d.visible == d.entry.isIntersecting) => return false
+        v = d.visible = d.entry.isIntersecting
+        [in-visible, in-trackee] = [(d in @visible), (d in @trackee)]
+        if v and !in-visible => @visible.push d
+        if !v and in-visible => @visible.splice(@visible.indexOf(d), 1)
+        if !d.tov =>
+          if v and !in-trackee => @trackee.push d
+          if !v and in-trackee => @trackee.splice(@trackee.indexOf(d), 1)
+        return true
 
     if ret.length => @fire \change, ret
 
-if window? => window.ldscroll = main
+window.ldscroll = main

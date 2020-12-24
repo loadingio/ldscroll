@@ -9,6 +9,7 @@
     this.root = root = typeof root === 'string'
       ? document.querySelector(root)
       : root ? root : null;
+    this.evtHandler = {};
     this.io = new IntersectionObserver(function(){
       var args, res$, i$, to$;
       res$ = [];
@@ -20,19 +21,27 @@
     }, {
       root: this.root
     });
+    this.tov = opt.trackOutsideView != null ? opt.trackOutsideView : true;
+    this.map = typeof WeakMap != 'undefined' && WeakMap !== null
+      ? new WeakMap()
+      : new Map();
     this.nodes = [];
     this.data = [];
     this.visible = [];
+    this.trackee = [];
     this.add(opt.nodes);
-    this.evtHandler = {};
-    window.addEventListener('scroll', function(){
-      this$.data.map(function(it, i){
+    this.root.addEventListener('scroll', function(){
+      var list;
+      list = this$.tov
+        ? this$.data
+        : this$.trackee;
+      list.map(function(it, i){
         var b;
         b = it.node.getBoundingClientRect();
         it.yb = (b.y + b.height) / window.innerHeight;
         return it.yt = b.y / window.innerHeight;
       });
-      return this$.fire('change', this$.data);
+      return this$.fire('change', list);
     });
     return this;
   };
@@ -54,8 +63,12 @@
       }
       return results$;
     },
-    add: function(ns){
-      var this$ = this;
+    getVisible: function(){
+      return this.visible;
+    },
+    add: function(ns, tov){
+      var h, ret, this$ = this;
+      tov == null && (tov = this.tov);
       this.nodes = this.nodes.concat((Array.isArray(ns)
         ? ns
         : [ns]).map(function(it){
@@ -67,51 +80,61 @@
       }).reduce(function(a, b){
         return a.concat(b);
       }, []));
-      this.nodes.forEach(function(it, i){
-        var b;
+      h = window.innerHeight;
+      ret = this.nodes.map(function(it, i){
+        var b, d;
         b = it.getBoundingClientRect();
-        it._ldscroll = {
+        this$.map.set(it, d = {
           node: it,
-          yt: b.y / window.innerHeight,
-          yb: (b.y + b.height) / window.innerHeight
-        };
-        return this$.io.observe(it);
+          tov: tov,
+          yt: b.y / h,
+          yb: (b.y + b.height) / h
+        });
+        this$.io.observe(it);
+        return d;
       });
-      return this.data = this.data.concat(this.nodes.map(function(it){
-        return it._ldscroll;
+      this.data = this.data.concat(ret);
+      return this.trackee = this.trackee.concat(ret.filter(function(it){
+        return it.tov;
       }));
     },
     handler: function(entries){
       var ret, this$ = this;
-      ret = entries.filter(function(entry){
+      ret = entries.map(function(entry){
         var d;
-        d = entry.target._ldscroll;
-        if (d.visible !== entry.isIntersecting) {
-          d.visible = entry.isIntersecting;
-          if (d.visible && !in$(d, this$.visible)) {
-            this$.visible.push(d);
-          }
-          if (!d.visible && in$(d, this$.visible)) {
-            this$.visible.splice(this$.visible.indexOf(d), 1);
-          }
-          return true;
+        if (d = this$.map.get(entry.target)) {
+          d.entry = entry;
         }
-        return false;
-      });
-      ret = ret.map(function(it){
-        var d;
-        d = it.target._ldscroll;
-        d.entry = it;
         return d;
+      }).filter(function(d){
+        var v, ref$, inVisible, inTrackee;
+        if (!d || d.visible === d.entry.isIntersecting) {
+          return false;
+        }
+        v = d.visible = d.entry.isIntersecting;
+        ref$ = [in$(d, this$.visible), in$(d, this$.trackee)], inVisible = ref$[0], inTrackee = ref$[1];
+        if (v && !inVisible) {
+          this$.visible.push(d);
+        }
+        if (!v && inVisible) {
+          this$.visible.splice(this$.visible.indexOf(d), 1);
+        }
+        if (!d.tov) {
+          if (v && !inTrackee) {
+            this$.trackee.push(d);
+          }
+          if (!v && inTrackee) {
+            this$.trackee.splice(this$.trackee.indexOf(d), 1);
+          }
+        }
+        return true;
       });
       if (ret.length) {
         return this.fire('change', ret);
       }
     }
   });
-  if (typeof window != 'undefined' && window !== null) {
-    window.ldscroll = main;
-  }
+  window.ldscroll = main;
   function import$(obj, src){
     var own = {}.hasOwnProperty;
     for (var key in src) if (own.call(src, key)) obj[key] = src[key];

@@ -14,10 +14,12 @@ library for visibility and position tracking.
 
  - root - root element where ldscroll works. Can be either selector or a DOM node.
  - nodes - Array of elements / nodes to watch. Item can be selector or DOM node.
+ - trackOutsideView - should nodes being tracking when outside viewport. default true.
 
 
 ## API
 
+ - getVisible() - get data for all visible nodes.
  - add(list) - add elements in list to ldscroll. format the same as option `nodes`.
  - on(name, cb) - watch event `name` and handle it with callback function `cb`. Available names as follow:
   - `change` - when ldscroll data for some elements are changed. changed ldscroll objects passed as callback param.

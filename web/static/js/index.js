@@ -38,7 +38,8 @@ view = new ldView({
 });
 s = new ldscroll({
   root: document,
-  nodes: view.getAll('marker')
+  nodes: view.getAll('marker'),
+  trackOutsideView: true
 });
 s.on('change', function(list){
   list.map(function(it){
