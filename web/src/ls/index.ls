@@ -16,7 +16,6 @@ view = new ldView do
         ..left = "#{y * 1008}px"
     base: ({node}) ->
       s = state.x or {}
-      console.log ">", s.progress#s.yt, s.yb, s.progress
     light: ({node}) ->
       id = node.getAttribute(\data-id)
       s = (state[id] or {})

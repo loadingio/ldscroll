@@ -21,8 +21,7 @@ view = new ldView({
     base: function(arg$){
       var node, s;
       node = arg$.node;
-      s = state.x || {};
-      return console.log(">", s.progress);
+      return s = state.x || {};
     },
     light: function(arg$){
       var node, id, s;
