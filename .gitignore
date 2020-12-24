@@ -1,0 +1,6 @@
+node_modules
+.*.swp
+.swp
+secret.*
+*.log
+web/.view

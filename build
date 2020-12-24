@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+echo "prepare..."
+rm -rf dist
+mkdir -p dist
+
+echo "building ldscroll.ls -> ldscroll.js ..."
+npx lsc -cp src/ldscroll.ls > dist/ldscroll.js
+echo "minify ldscroll.js -> ldscroll.min.js ..."
+npx uglifyjs dist/ldscroll.js > dist/ldscroll.min.js
+
+#echo "build src/ldscroll.styl -> dist/ldscroll.css ..."
+#./node_modules/.bin/stylus -p src/ldscroll.styl > dist/ldscroll.css
+#echo "minifying ldscrolldscroll.css ..."
+#./node_modules/.bin/uglifycss dist/ldscroll.css > dist/ldscroll.min.css
+
+echo "copy dist to web ..."
+rm -rf web/static/assets/lib/ldscroll/dev/
+mkdir -p web/static/assets/lib/ldscroll/dev/
+cp -R dist/* web/static/assets/lib/ldscroll/dev/
