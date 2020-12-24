@@ -1,3 +1,4 @@
+bezier = new cubic.Bezier([0.5,0,0.5,1])
 state = {}
 view = new ldView do
   root: document.body
@@ -7,9 +8,13 @@ view = new ldView do
       s = (state[id] or {})
       a = 255 * (s.yt >? 0 <? 1)
       b = 255 - a
+      y = s.yt >? 0 <? 1
+      y = bezier.y bezier.t y
+
       node.style
         ..background = "rgba(#a,0,#b,1)"
-        ..left = "#{((s.yt >? 0 <? 1) * 1008)}px"
+        ..left = "#{y * 1008}px"
+        #..left = "#{((s.yt >? 0 <? 1) * 1008)}px"
     light: ({node}) ->
       id = node.getAttribute(\data-id)
       s = (state[id] or {})

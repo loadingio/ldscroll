@@ -1,18 +1,21 @@
-var state, view, s;
+var bezier, state, view, s;
+bezier = new cubic.Bezier([0.5, 0, 0.5, 1]);
 state = {};
 view = new ldView({
   root: document.body,
   handler: {
     marker: function(arg$){
-      var node, id, s, a, ref$, ref1$, b, x$;
+      var node, id, s, a, ref$, ref1$, b, y, x$;
       node = arg$.node;
       id = node.getAttribute('data-id');
       s = state[id] || {};
       a = 255 * ((ref$ = (ref1$ = s.yt) > 0 ? ref1$ : 0) < 1 ? ref$ : 1);
       b = 255 - a;
+      y = (ref$ = (ref1$ = s.yt) > 0 ? ref1$ : 0) < 1 ? ref$ : 1;
+      y = bezier.y(bezier.t(y));
       x$ = node.style;
       x$.background = "rgba(" + a + ",0," + b + ",1)";
-      x$.left = ((ref$ = (ref1$ = s.yt) > 0 ? ref1$ : 0) < 1 ? ref$ : 1) * 1008 + "px";
+      x$.left = y * 1008 + "px";
       return x$;
     },
     light: function(arg$){

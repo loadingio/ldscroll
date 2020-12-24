@@ -41,6 +41,7 @@
       "@loadingio/ldquery",
       "@loadingio/debounce.js",
       "@loadingio/transition.css",
+      "@loadingio/cubic",
       "ldview"
     ]
   }
