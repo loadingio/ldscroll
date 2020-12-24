@@ -18,6 +18,12 @@ view = new ldView({
       x$.left = y * 1008 + "px";
       return x$;
     },
+    base: function(arg$){
+      var node, s;
+      node = arg$.node;
+      s = state.x || {};
+      return console.log(">", s.progress);
+    },
     light: function(arg$){
       var node, id, s;
       node = arg$.node;
@@ -38,7 +44,7 @@ view = new ldView({
 });
 s = new ldscroll({
   root: document,
-  nodes: view.getAll('marker'),
+  nodes: view.getAll('marker').concat(view.getAll('base')),
   trackOutsideView: true
 });
 s.on('change', function(list){

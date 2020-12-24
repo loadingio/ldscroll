@@ -24,10 +24,15 @@ main = (opt={}) ->
   @add opt.nodes
   @root.addEventListener \scroll, ~>
     list = if @tov => @data else @trackee
-    list.map (it,i) ~>
-      b = it.node.getBoundingClientRect!
-      it.yb = (b.y + b.height) / window.innerHeight
-      it.yt = b.y / window.innerHeight
+    list.map (d,i) ~>
+      b = d.node.getBoundingClientRect!
+      d.yb = (b.y + b.height) / window.innerHeight
+      d.yt = b.y / window.innerHeight
+      d.yp = d.yt / (1 - (d.yb - d.yt ))
+      d.progress = if d.yp < 0 => -d.yt
+      else if d.yp > 1 => 2 - d.yb
+      else d.yp
+
     @fire \change, list
   @
 
@@ -48,6 +53,11 @@ main.prototype = Object.create(Object.prototype) <<< do
         yt: b.y / h
         yb: (b.y + b.height) / h
       })
+      d.yp = d.yt / (1 - (d.yb - d.yt))
+      d.progress = if d.yp < 0 => -d.yt
+      else if d.yp > 1 => 2 - d.yb
+      else d.yp
+
       @io.observe it
       d
     @data ++= ret

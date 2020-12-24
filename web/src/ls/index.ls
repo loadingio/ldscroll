@@ -14,7 +14,9 @@ view = new ldView do
       node.style
         ..background = "rgba(#a,0,#b,1)"
         ..left = "#{y * 1008}px"
-        #..left = "#{((s.yt >? 0 <? 1) * 1008)}px"
+    base: ({node}) ->
+      s = state.x or {}
+      console.log ">", s.progress#s.yt, s.yb, s.progress
     light: ({node}) ->
       id = node.getAttribute(\data-id)
       s = (state[id] or {})
@@ -27,7 +29,7 @@ view = new ldView do
       node.style.background = "rgba(0,0,0,#{y})"
 s = new ldscroll do
   root: document
-  nodes: view.getAll('marker')
+  nodes: view.getAll('marker') ++ view.getAll('base')
   track-outside-view: true
 s.on \change, (list) -> 
   list.map ->

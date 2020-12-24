@@ -35,11 +35,17 @@
       list = this$.tov
         ? this$.data
         : this$.trackee;
-      list.map(function(it, i){
+      list.map(function(d, i){
         var b;
-        b = it.node.getBoundingClientRect();
-        it.yb = (b.y + b.height) / window.innerHeight;
-        return it.yt = b.y / window.innerHeight;
+        b = d.node.getBoundingClientRect();
+        d.yb = (b.y + b.height) / window.innerHeight;
+        d.yt = b.y / window.innerHeight;
+        d.yp = d.yt / (1 - (d.yb - d.yt));
+        return d.progress = d.yp < 0
+          ? -d.yt
+          : d.yp > 1
+            ? 2 - d.yb
+            : d.yp;
       });
       return this$.fire('change', list);
     });
@@ -90,6 +96,12 @@
           yt: b.y / h,
           yb: (b.y + b.height) / h
         });
+        d.yp = d.yt / (1 - (d.yb - d.yt));
+        d.progress = d.yp < 0
+          ? -d.yt
+          : d.yp > 1
+            ? 2 - d.yb
+            : d.yp;
         this$.io.observe(it);
         return d;
       });
