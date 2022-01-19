@@ -1,9 +1,9 @@
 doctype html
 html
-  include /../../static/assets/lib/bootstrap.ldui/main/index.pug
+  include @/@loadingio/bootstrap.ext/index.pug
   head
-    +css("/assets/lib/bootstrap/main/css/bootstrap.min.css")
-    +css("/assets/lib/bootstrap.ldui/main/bootstrap.ldui.min.css")
+    +css("/assets/lib/bootstrap/main/dist/css/bootstrap.min.css")
+    +css("/assets/lib/@loadingio/bootstrap.ext/main/index.min.css")
     +css("/assets/lib/@loadingio/transition.css/main/transition.min.css")
     +css("/css/index.css")
   body
@@ -23,8 +23,8 @@ html
         p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec feugiat pulvinar metus et fringilla. Sed nulla eros, tincidunt vel velit id, laoreet egestas enim. Proin justo leo, dapibus non est nec, luctus sagittis tortor. Nullam a nunc vitae turpis ultrices bibendum sed nec nunc. Cras sit amet enim vel purus malesuada feugiat eu vel mauris. Praesent tellus eros, mattis sit amet congue quis, malesuada in elit. Aliquam enim nisi, volutpat nec est eget, consectetur accumsan magna. Mauris eget luctus odio. Morbi convallis lacinia aliquet. Fusce elementum neque sit amet nulla iaculis, nec pharetra quam maximus. Pellentesque id turpis a metus tristique scelerisque at vel turpis. Etiam fermentum quam ante, at aliquet nibh dignissim in. Nam facilisis non lorem id gravida. Nunc ut ligula eget quam egestas finibus. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
         div(ld="marker",data-id=i)
     .w-100.h-100.bg-light
-    +script("/assets/lib/@loadingio/ldquery/main/ldq.min.js")
-    +script("/assets/lib/ldview/main/ldview.min.js")
-    +script("/assets/lib/@loadingio/cubic/main/cubic.min.js")
-    +script("/assets/lib/ldscroll/dev/ldscroll.min.js")
+    +script("/assets/lib/@loadingio/ldquery/main/index.min.js")
+    +script("/assets/lib/ldview/main/index.min.js")
+    +script("/assets/lib/@loadingio/cubic/main/index.min.js")
+    +script("/assets/lib/ldscroll/dev/index.min.js")
     +script("/js/index.js")

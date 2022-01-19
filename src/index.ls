@@ -1,4 +1,4 @@
-main = (opt={}) ->
+ldscroll = (opt={}) ->
   @opt = opt
   root = opt.root
   @root = root = if typeof(root) == \string => document.querySelector(root) else if root => root else null
@@ -36,7 +36,7 @@ main = (opt={}) ->
     @fire \change, list
   @
 
-main.prototype = Object.create(Object.prototype) <<< do
+ldscroll.prototype = Object.create(Object.prototype) <<< do
   on: (n, cb) -> @evt-handler.[][n].push cb
   fire: (n, ...v) -> for cb in (@evt-handler[n] or []) => cb.apply @, v
   get-visible: -> @visible
@@ -80,4 +80,5 @@ main.prototype = Object.create(Object.prototype) <<< do
 
     if ret.length => @fire \change, ret
 
-window.ldscroll = main
+if module? => module.exports = ldscroll
+else window.ldscroll = ldscroll

@@ -1,5 +1,14 @@
 # Change Logs
 
+## v1.0.1
+
+ - bug fix: we should already be using `index.js`, instead of `ldscroll.js`.
+ - upgrade modules
+ - add missing `main` and `browser` field in `package.json`.
+ - remove lib files from git
+ - patch test code for module upgrade
+
+
 ## v1.0.0
 
  - upgrade modules

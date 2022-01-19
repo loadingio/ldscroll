@@ -4,3 +4,4 @@ node_modules
 secret.*
 *.log
 web/.view
+web/static/assets/lib/

@@ -3,7 +3,9 @@
   "name": "ldscroll",
   "license": "MIT",
   "description": "visibility + parallex",
-  "version": "1.0.0",
+  "version": "1.0.1",
+  "browser": "dist/index.min.js",
+  "main": "dist/index.min.js",
   "files": [
     "dist/**/*"
   ],
@@ -20,15 +22,16 @@
     "start": "npx server -r web -o true"
   },
   "devDependencies": {
+    "@loadingio/bootstrap.ext": "^0.0.4",
+    "@loadingio/cubic": "^0.0.3",
     "@loadingio/ldquery": "^3.0.1",
     "@loadingio/transition.css": "^3.0.0",
+    "@zbryikt/template": "^2.3.33",
     "bootstrap": "^4.5.2",
-    "@loadingio/bootstrap.ext": "^0.0.3",
     "bootstrap.native": "^3.0.13",
     "fedep": "1.1.0",
     "ldview": "1.0.0",
     "stylus": "^0.55.0",
-    "@zbryikt/template": "^2.3.33",
     "uglify-js": "^3.13.1",
     "uglifycss": "^0.0.29"
   },
